@@ -26,7 +26,7 @@ from transcriber.transcription import (
 
 def make_result(**overrides) -> TranscriptionResult:
     defaults = dict(
-        file_path=Path("/tmp/audio_whatsapp.mp3"),
+        file_path=Path("/tmp/meeting-2026-08-15.mp3"),
         text="Olá, tudo bem?",
         segments=[Segment(0.0, 4.5, "Olá, tudo bem?")],
         language="pt",
@@ -83,7 +83,7 @@ def build_transcriber(monkeypatch, models: dict[str, FakeModel], cuda: bool = Tr
 
 def test_summary_lists_all_required_fields() -> None:
     summary = make_result().summary()
-    assert "Arquivo: audio_whatsapp.mp3" in summary
+    assert "Arquivo: meeting-2026-08-15.mp3" in summary
     assert "Idioma detectado: Português (pt)" in summary
     assert "Modelo: small" in summary
     assert "Dispositivo: CPU" in summary
@@ -97,7 +97,7 @@ def test_summary_follows_the_interface_language() -> None:
     i18n.set_language(i18n.EN)
     try:
         summary = make_result().summary()
-        assert "File: audio_whatsapp.mp3" in summary
+        assert "File: meeting-2026-08-15.mp3" in summary
         assert "Detected language: Portuguese (pt)" in summary
     finally:
         i18n.set_language(i18n.DEFAULT_LANGUAGE)

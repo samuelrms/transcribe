@@ -7,8 +7,8 @@
 
 > [Versão em português](README.md) · [Design decisions](DESIGN.md)
 
-Turns audio into text **entirely on your own computer**. Built for Brazilian Portuguese
-WhatsApp voice messages, with a queue for many files, TXT and SRT export, and an
+Turns **any audio** into text, entirely on your own computer: meetings, interviews,
+lectures, podcasts, voice messages. A queue for many files, TXT and SRT export, and an
 interface in Portuguese and English.
 
 It uses [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) (CTranslate2) with a
@@ -162,7 +162,8 @@ For tests and builds, also install `pip install -r requirements-dev.txt`.
 ## Usage
 
 1. **Add audio** — one or several files at once. Formats: MP3, WAV, M4A, OGG, OPUS, AAC,
-   FLAC (WhatsApp `.opus`/`.ogg` included).
+   FLAC. That covers everything from a meeting recorder to WhatsApp voice messages,
+   which arrive as `.opus`.
 2. Pick the audio **language**, the **model** and how many **concurrent** transcriptions.
 3. **Transcribe**. The path line advances and you can **Cancel** at any moment.
 4. Click a file in the queue to read its transcription.
@@ -172,7 +173,7 @@ For tests and builds, also install `pip install -r requirements-dev.txt`.
 Summary shown when a file finishes:
 
 ```text
-File: audio_whatsapp.mp3
+File: meeting-2026-08-15.mp3
 Detected language: Portuguese (pt) — confidence 100%
 Model: medium
 Device: CPU
@@ -235,7 +236,8 @@ The application only shows the download notice for a model that is **not on disk
 | `medium`   | ~1.5 GB  | ~3 GB      | **Default — best accuracy on CPU** |
 | `large-v3` | ~2.9 GB  | ~5 GB      | Only with an NVIDIA GPU and 16 GB+ RAM |
 
-Measured in this project (macOS, Apple Silicon, CPU `int8`) on the same **19.5 s** clip:
+Measured in this project (macOS, Apple Silicon, CPU `int8`) on a **19.5 s** voice
+message:
 
 | Model    | Time   | Share of the duration |
 | -------- | ------ | --------------------- |
@@ -244,6 +246,7 @@ Measured in this project (macOS, Apple Silicon, CPU `int8`) on the same **19.5 s
 
 Real quality difference on that clip: `small` produced "últimas **águas**" and "cinco
 pessoas **minhas**"; `medium` got "últimas **vagas**" and "cinco pessoas **mesmo**" right.
+Spontaneous speech punishes a small model; a clean recording forgives much more.
 
 ---
 

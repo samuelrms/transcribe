@@ -7,9 +7,9 @@
 
 > [English version](README.en.md) · [Decisões de design](DESIGN.md)
 
-Transcreve áudio em texto **100% no seu computador**. Feito para áudios do WhatsApp em
-português brasileiro, com fila para vários arquivos, exportação em TXT e SRT, e interface
-em português e inglês.
+Transcreve **qualquer áudio** em texto, 100% no seu computador: reunião, entrevista,
+aula, podcast, mensagem de voz. Fila para vários arquivos, exportação em TXT e SRT, e
+interface em português e inglês.
 
 Usa [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) (CTranslate2) com
 interface Tkinter vestida na identidade visual **Nzila**. **Nenhum áudio sai da máquina** —
@@ -162,7 +162,8 @@ Para testes e build, instale também `pip install -r requirements-dev.txt`.
 ## Como usar
 
 1. **Adicionar áudios** — um ou vários de uma vez. Formatos: MP3, WAV, M4A, OGG, OPUS,
-   AAC, FLAC (os `.opus`/`.ogg` do WhatsApp inclusos).
+   AAC, FLAC. Isso cobre desde gravador de reunião até as mensagens de voz do WhatsApp,
+   que saem em `.opus`.
 2. Escolha o **idioma** do áudio, o **modelo** e quantas transcrições **simultâneas**.
 3. **Transcrever**. A linha de progresso avança e dá para **Cancelar** a qualquer momento.
 4. Clique em um arquivo da fila para ler a transcrição dele.
@@ -172,7 +173,7 @@ Para testes e build, instale também `pip install -r requirements-dev.txt`.
 Resumo exibido ao terminar:
 
 ```text
-Arquivo: audio_whatsapp.mp3
+Arquivo: reuniao-2026-08-15.mp3
 Idioma detectado: Português (pt) — confiança 100%
 Modelo: medium
 Dispositivo: CPU
@@ -235,7 +236,8 @@ A aplicação só mostra o aviso de download para o modelo que **ainda não est�
 | `medium`   | ~1,5 GB   | ~3 GB      | **Padrão — melhor precisão em CPU** |
 | `large-v3` | ~2,9 GB   | ~5 GB      | Só com GPU NVIDIA e 16 GB+ de RAM |
 
-Medido neste projeto (macOS, Apple Silicon, CPU `int8`) com o mesmo áudio de **19,5 s**:
+Medido neste projeto (macOS, Apple Silicon, CPU `int8`) com uma mensagem de voz de
+**19,5 s**:
 
 | Modelo   | Tempo  | Proporção da duração |
 | -------- | ------ | -------------------- |
@@ -244,6 +246,7 @@ Medido neste projeto (macOS, Apple Silicon, CPU `int8`) com o mesmo áudio de **
 
 Diferença real de qualidade nesse áudio: o `small` produziu "últimas **águas**" e "cinco
 pessoas **minhas**"; o `medium` acertou "últimas **vagas**" e "cinco pessoas **mesmo**".
+Fala espontânea castiga modelo pequeno; áudio bem gravado perdoa mais.
 
 ---
 

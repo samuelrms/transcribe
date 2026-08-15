@@ -120,7 +120,7 @@ def test_all_declared_extensions_are_supported(extension: str) -> None:
     assert is_supported_audio(f"audio{extension}")
 
 
-def test_supported_extensions_cover_whatsapp_formats() -> None:
+def test_supported_extensions_cover_common_voice_formats() -> None:
     assert {".mp3", ".wav", ".m4a", ".ogg", ".opus", ".aac", ".flac"} <= set(SUPPORTED_EXTENSIONS)
 
 
