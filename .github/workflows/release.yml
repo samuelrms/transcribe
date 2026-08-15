@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+# PyInstaller never cross-compiles: every target is built on its own runner.
+jobs:
+  build:
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            label: macOS (Apple Silicon)
+            artifact: Transcriber-macos-arm64
+          - os: macos-13
+            label: macOS (Intel)
+            artifact: Transcriber-macos-x86_64
+          - os: windows-latest
+            label: Windows (x64)
+            artifact: Transcriber-windows-x86_64
+          - os: ubuntu-22.04
+            label: Ubuntu (x64)
+            artifact: Transcriber-linux-x86_64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Tk (Ubuntu only)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y python3-tk tk-dev
+
+      # Fail here with a clear message instead of shipping a binary whose
+      # interface cannot start on the user's machine.
+      - name: Tkinter is available
+        run: python -c "import tkinter; print('Tk', tkinter.TkVersion)"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Tests
+        run: python -m pytest -q
+
+      - name: Build
+        run: pyinstaller --noconfirm --clean Transcriber.spec
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          hdiutil create -volname "Transcriber" \
+            -srcfolder "dist/Transcriber.app" \
+            -ov -format UDZO "${{ matrix.artifact }}.dmg"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path dist/Transcriber.exe -DestinationPath ${{ matrix.artifact }}.zip
+        shell: pwsh
+
+      - name: Package (Linux)
+        if: runner.os == 'Linux'
+        run: tar -czf ${{ matrix.artifact }}.tar.gz -C dist Transcriber
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            *.dmg
+            *.zip
+            *.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List what will be published
+        run: ls -lh artifacts
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
+          body: |
+            Binários não assinados: os modelos Whisper **não** vão embutidos e são
+            baixados no primeiro uso (precisa de internet uma vez).
+
+            - **macOS**: abra o `.dmg`, arraste para Aplicativos. Na primeira execução,
+              o Gatekeeper bloqueia por falta de assinatura — clique com o botão direito
+              no app e escolha *Abrir*, ou rode
+              `xattr -dr com.apple.quarantine "/Applications/Transcriber.app"`.
+            - **Windows**: extraia o `.zip` e rode `Transcriber.exe`. O SmartScreen
+              pode avisar por ser um executável não assinado.
+            - **Ubuntu**: extraia o `.tar.gz` e rode `./Transcriber/Transcriber`.
+              Requer `libtk` no sistema (`sudo apt install python3-tk`).

@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# PyInstaller build and release artifacts
+build/
+dist/
+*.dmg
+*.tar.gz
+*.spec.bak
+
+# Application output and logs
+output/*
+!output/.gitkeep
+transcriber.log
+transcriber.log.*
+
+# Test audio (never commit personal recordings)
+*.mp3
+*.wav
+*.m4a
+*.ogg
+*.opus
+*.aac
+*.flac
+
+# Screenshots
+*.png
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

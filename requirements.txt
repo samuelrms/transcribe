@@ -1,0 +1,9 @@
+# Núcleo da transcrição (traz junto ctranslate2, tokenizers, huggingface-hub e onnxruntime).
+faster-whisper>=1.1.0
+
+# Decodificação dos arquivos de áudio (mp3/m4a/ogg/opus/aac/flac).
+av>=11.0.0
+
+# A interface usa Tkinter, que já acompanha o Python na maioria das instalações.
+# Linux: sudo apt install python3-tk
+# macOS (Homebrew): brew install python-tk
