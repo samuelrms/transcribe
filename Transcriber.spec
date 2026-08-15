@@ -105,8 +105,8 @@ if IS_MACOS:
         info_plist={
             "CFBundleName": "Transcriber",
             "CFBundleDisplayName": "Transcriber",
-            "CFBundleShortVersionString": "2.0.0",
-            "CFBundleVersion": "2.0.0",
+            "CFBundleShortVersionString": "1.0.0",
+            "CFBundleVersion": "1.0.0",
             "NSHighResolutionCapable": True,
             # Microphone is never used: the app only reads files the user picks.
             "LSApplicationCategoryType": "public.app-category.productivity",

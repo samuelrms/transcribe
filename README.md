@@ -291,8 +291,8 @@ a interface e para o build.
 ### Publicar uma versão
 
 ```bash
-git tag v2.0.0
-git push origin v2.0.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 A tag dispara o workflow de release, que compila as quatro variantes, roda os testes em
@@ -330,7 +330,7 @@ automaticamente.
 
 ```mermaid
 flowchart LR
-    T["git push origin v2.0.0"] --> M1["macos-latest"]
+    T["git push origin v1.0.0"] --> M1["macos-latest"]
     T --> M2["macos-13"]
     T --> W["windows-latest"]
     T --> U["ubuntu-22.04"]
