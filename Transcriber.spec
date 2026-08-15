@@ -22,6 +22,8 @@ Whisper weights are NOT bundled: they are downloaded on first use into the
 user cache, exactly like the source version.
 """
 
+import pathlib
+import re
 import sys
 
 from PyInstaller.utils.hooks import (
@@ -32,6 +34,13 @@ from PyInstaller.utils.hooks import (
 )
 
 APP_NAME = "Transcriber"
+
+# Single source of truth for the version: the package. Reading it here keeps the
+# bundle metadata and the released tag from drifting apart.
+VERSION = re.search(
+    r'__version__ = "([^"]+)"',
+    pathlib.Path("transcriber/__init__.py").read_text(encoding="utf-8"),
+).group(1)
 IS_MACOS = sys.platform == "darwin"
 IS_WINDOWS = sys.platform == "win32"
 
@@ -105,8 +114,8 @@ if IS_MACOS:
         info_plist={
             "CFBundleName": "Transcriber",
             "CFBundleDisplayName": "Transcriber",
-            "CFBundleShortVersionString": "1.0.0",
-            "CFBundleVersion": "1.0.0",
+            "CFBundleShortVersionString": VERSION,
+            "CFBundleVersion": VERSION,
             "NSHighResolutionCapable": True,
             # Microphone is never used: the app only reads files the user picks.
             "LSApplicationCategoryType": "public.app-category.productivity",

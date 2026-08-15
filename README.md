@@ -290,13 +290,29 @@ a interface e para o build.
 
 ### Publicar uma versão
 
+A release é automática: sai a cada merge ou push direto na `main`, **desde que a versão
+tenha mudado**. Quem decide isso é o `__version__`:
+
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+# 1. suba a versão no pacote
+sed -i '' 's/__version__ = "1.0.0"/__version__ = "1.1.0"/' transcriber/__init__.py
+
+# 2. mande para a main, direto ou por pull request
+git commit -am "chore: bump version to 1.1.0"
+git push origin main
 ```
 
-A tag dispara o workflow de release, que compila as quatro variantes, roda os testes em
-cada uma e publica tudo em **Releases**. Sem tag, nada é publicado.
+O workflow lê o `__version__`, monta a tag `v1.1.0` e verifica se ela já existe no
+repositório:
+
+- **não existe** → compila as quatro variantes, roda os testes em cada uma, cria a tag no
+  commit e publica tudo em **Releases**;
+- **já existe** → pula o build inteiro e registra um aviso no run. Commit comum não gera
+  release nem gasta minutos de CI.
+
+Não é preciso criar tag na mão: ela nasce junto da release, no mesmo commit, então a
+versão do código e a tag do repositório nunca divergem. O `Transcriber.spec` também lê o
+`__version__`, de modo que o `Info.plist` do app carrega o mesmo número.
 
 ---
 
@@ -311,10 +327,11 @@ Dois workflows em [`.github/workflows/`](.github/workflows):
 | `test` | Lint (`pyflakes`) e a suíte completa em **9 combinações**: Ubuntu, macOS e Windows × Python 3.11, 3.12 e 3.13. Instala só `pytest` e `pyflakes`, porque nenhum teste precisa do Whisper — roda em menos de um minuto. |
 | `smoke` | Instala as dependências de verdade no Ubuntu, confirma que o Tkinter existe e **monta a janela real** sob `xvfb`, num display virtual. Pega erro de layout e de tema que teste unitário não vê. |
 
-### `release.yml` — ao publicar uma tag `v*`
+### `release.yml` — a cada merge ou push na `main`
 
-Compila em paralelo, cada alvo no seu próprio runner, porque o PyInstaller **não faz
-cross-compile**:
+Primeiro um job curto lê o `__version__` e decide se há o que publicar. Se a tag
+correspondente já existe, tudo para ali. Se não existe, compila em paralelo, cada alvo no
+seu próprio runner, porque o PyInstaller **não faz cross-compile**:
 
 | Runner | Artefato | Formato |
 | --- | --- | --- |
@@ -330,10 +347,15 @@ automaticamente.
 
 ```mermaid
 flowchart LR
-    T["git push origin v1.0.0"] --> M1["macos-latest"]
-    T --> M2["macos-13"]
-    T --> W["windows-latest"]
-    T --> U["ubuntu-22.04"]
+    T["push na main"] --> V{"__version__ já<br/>tem release?"}
+    V -- sim --> S["Para aqui, sem gastar build"]
+    V -- não --> M1["macos-latest"]
+    V -- não --> M2
+    V -- não --> W
+    V -- não --> U
+    M2["macos-13"]
+    W["windows-latest"]
+    U["ubuntu-22.04"]
 
     M1 --> P1["testes + PyInstaller"]
     M2 --> P2["testes + PyInstaller"]

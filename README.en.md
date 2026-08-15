@@ -290,13 +290,29 @@ the interface and by the build.
 
 ### Publish a version
 
+Releases are automatic: one goes out on every merge or direct push to `main`, **as long as
+the version changed**. `__version__` is what decides:
+
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+# 1. bump the version in the package
+sed -i '' 's/__version__ = "1.0.0"/__version__ = "1.1.0"/' transcriber/__init__.py
+
+# 2. send it to main, directly or through a pull request
+git commit -am "chore: bump version to 1.1.0"
+git push origin main
 ```
 
-The tag triggers the release workflow, which builds the four variants, runs the tests on
-each and publishes everything under **Releases**. Without a tag, nothing is published.
+The workflow reads `__version__`, builds the tag `v1.1.0` and checks whether it already
+exists in the repository:
+
+- **it does not** → build the four variants, run the tests on each, create the tag on the
+  commit and publish everything under **Releases**;
+- **it does** → skip the whole build and log a notice on the run. An ordinary commit
+  neither creates a release nor burns CI minutes.
+
+You never create the tag by hand: it is born with the release, on the same commit, so the
+version in the source and the tag in the repository cannot drift. `Transcriber.spec` also
+reads `__version__`, so the app's `Info.plist` carries the same number.
 
 ---
 
@@ -311,10 +327,11 @@ Two workflows in [`.github/workflows/`](.github/workflows):
 | `test` | Lint (`pyflakes`) and the full suite across **9 combinations**: Ubuntu, macOS and Windows × Python 3.11, 3.12 and 3.13. Installs only `pytest` and `pyflakes`, because no test needs Whisper — it runs in under a minute. |
 | `smoke` | Installs the real dependencies on Ubuntu, confirms Tkinter is present and **builds the actual window** under `xvfb`, on a virtual display. Catches layout and theming errors unit tests cannot see. |
 
-### `release.yml` — when a `v*` tag is pushed
+### `release.yml` — on every merge or push to `main`
 
-Builds in parallel, each target on its own runner, because PyInstaller **never
-cross-compiles**:
+A short job reads `__version__` first and decides whether there is anything to publish. If
+the matching tag already exists, everything stops there. If it does not, the build runs in
+parallel, each target on its own runner, because PyInstaller **never cross-compiles**:
 
 | Runner | Artifact | Format |
 | --- | --- | --- |
@@ -329,10 +346,15 @@ end the `release` job gathers everything into a GitHub release with generated no
 
 ```mermaid
 flowchart LR
-    T["git push origin v1.0.0"] --> M1["macos-latest"]
-    T --> M2["macos-13"]
-    T --> W["windows-latest"]
-    T --> U["ubuntu-22.04"]
+    T["push to main"] --> V{"does __version__<br/>already have a release?"}
+    V -- yes --> S["Stops here, no build spent"]
+    V -- no --> M1["macos-latest"]
+    V -- no --> M2
+    V -- no --> W
+    V -- no --> U
+    M2["macos-13"]
+    W["windows-latest"]
+    U["ubuntu-22.04"]
 
     M1 --> P1["tests + PyInstaller"]
     M2 --> P2["tests + PyInstaller"]
