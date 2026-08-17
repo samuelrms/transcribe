@@ -139,6 +139,11 @@ jobs:
           name: ${{ needs.version.outputs.tag }}
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
+          # Explicit so a release never lands as a draft or a pre-release, which
+          # hides it from the "latest release" link people actually click.
+          draft: false
+          prerelease: false
+          make_latest: true
           files: artifacts/*
           body: |
             Binários não assinados: os modelos Whisper **não** vão embutidos e são
