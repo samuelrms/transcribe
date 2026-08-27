@@ -1,7 +1,7 @@
 # Transcriber
 
-[![CI](https://github.com/samuelrms/transcriber/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelrms/transcriber/actions/workflows/ci.yml)
-[![Release](https://github.com/samuelrms/transcriber/actions/workflows/release.yml/badge.svg)](https://github.com/samuelrms/transcriber/actions/workflows/release.yml)
+[![CI](https://github.com/samuelrms/transcribe/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelrms/transcriber/actions/workflows/ci.yml)
+[![Release](https://github.com/samuelrms/transcribe/actions/workflows/release.yml/badge.svg)](https://github.com/samuelrms/transcriber/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-C4552F.svg)](LICENSE)
 ![Plataformas](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Ubuntu-1A1714)
 
