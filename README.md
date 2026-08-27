@@ -5,6 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-C4552F.svg)](LICENSE)
 ![Plataformas](https://img.shields.io/badge/macOS%20·%20Windows%20·%20Ubuntu-1A1714)
 
+<img width="1582" height="1035" alt="Transcribe app" src="https://github.com/user-attachments/assets/b88b12ad-ec30-4c60-be7b-9ca31ef27364" />
+
+
 > [English version](README.en.md) · [Decisões de design](DESIGN.md)
 
 Transcreve **qualquer áudio** em texto, 100% no seu computador: reunião, entrevista,
