@@ -44,6 +44,7 @@ From the picked file to the exported text. The interface never freezes because d
 runs on separate threads that only talk to the screen through an event queue.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false, "padding": 16, "wrappingWidth": 300}, "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "15px"}}}%%
 flowchart TD
     A["Add audio"] --> B{"Supported extension<br/>and not queued yet?"}
     B -- no --> B1["Skipped, with a notice"]
@@ -345,6 +346,7 @@ Tkinter is unavailable — better than shipping a binary whose interface cannot 
 end the `release` job gathers everything into a GitHub release with generated notes.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false, "padding": 16, "wrappingWidth": 300}, "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "15px"}}}%%
 flowchart LR
     T["push to main"] --> V{"does __version__<br/>already have a release?"}
     V -- yes --> S["Stops here, no build spent"]

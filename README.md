@@ -47,6 +47,7 @@ Do arquivo escolhido até o texto exportado. A interface nunca trava porque a de
 roda em threads separadas, que só conversam com a tela por uma fila de eventos.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false, "padding": 16, "wrappingWidth": 300}, "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "15px"}}}%%
 flowchart TD
     A["Adicionar áudios"] --> B{"Extensão suportada<br/>e ainda não na fila?"}
     B -- não --> B1["Ignorado, com aviso"]
@@ -349,6 +350,7 @@ abre. No fim, o job `release` junta tudo em uma release do GitHub com notas gera
 automaticamente.
 
 ```mermaid
+%%{init: {"htmlLabels": false, "flowchart": {"htmlLabels": false, "padding": 16, "wrappingWidth": 300}, "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "15px"}}}%%
 flowchart LR
     T["push na main"] --> V{"__version__ já<br/>tem release?"}
     V -- sim --> S["Para aqui, sem gastar build"]
